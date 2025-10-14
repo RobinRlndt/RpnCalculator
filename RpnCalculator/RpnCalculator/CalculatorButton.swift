@@ -8,11 +8,21 @@
 import SwiftUI
 
 struct CalculatorButton: View {
+    var title: String
+    var action: () -> Void
+
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        Button(action: action) {
+            Text(title)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .foregroundColor(.white)
+                .font(.title)
+                .background(Color.blue)
+                .cornerRadius(10)
+        }
+        .frame(height: 70)
+        .padding(4)
     }
 }
 
-#Preview {
-    CalculatorButton()
-}
+
