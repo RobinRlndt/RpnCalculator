@@ -1,10 +1,3 @@
-//
-//  RpnCalcView.swift
-//  RpnCalculator
-//
-//  Created by Robin Roelandt on 09/10/2025.
-//
-
 import SwiftUI
 
 struct RpnCalcView: View {
@@ -15,79 +8,68 @@ struct RpnCalcView: View {
     var body: some View {
         VStack {
             Spacer()
-            
-            HStack() {
-                VStack(spacing: 5) {
-                    Text(displayedText)
-                        .frame(width: 160, height: 285)
-                        .padding()
-                        .border(Color.black)
 
-                    CalculatorButton(title: "Show Stack") {
-                        displayedText.append("\n" + printedStack)
+            Text(displayedText)
+                .frame(width: 160, height: 285)
+                .padding()
+                .border(Color.black)
+
+            CalculatorButton(title: "Show Stack") {
+                displayedText = printedStack
+            }
+            .padding(.bottom, 10)
+
+            VStack(spacing: 8) {
+                HStack(spacing: 8) {
+                    CalculatorButton(title: "7") { appendDigit("7") }
+                    CalculatorButton(title: "8") { appendDigit("8") }
+                    CalculatorButton(title: "9") { appendDigit("9") }
+                    CalculatorButton(title: "/") {
+                        calcEngine.divide()
+                        updateDisplay()
                     }
                 }
-
-                VStack() {
-                    Grid(horizontalSpacing: 2, verticalSpacing: 2) {
-                        GridRow {
-                            CalculatorButton(title: "7") { appendDigit("7") }
-                            CalculatorButton(title: "8") { appendDigit("8") }
-                            CalculatorButton(title: "9") { appendDigit("9") }
-                            CalculatorButton(title: "/") {
-                                calcEngine.divide()
-                                updateDisplay()
-                            }
-                        }
-                        GridRow {
-                            CalculatorButton(title: "4") { appendDigit("4") }
-                            CalculatorButton(title: "5") { appendDigit("5") }
-                            CalculatorButton(title: "6") { appendDigit("6") }
-                            CalculatorButton(title: "*") {
-                                calcEngine.multiply()
-                                updateDisplay()
-                            }
-                        }
-                        GridRow {
-                            CalculatorButton(title: "1") { appendDigit("1") }
-                            CalculatorButton(title: "2") { appendDigit("2") }
-                            CalculatorButton(title: "3") { appendDigit("3") }
-                            CalculatorButton(title: "-") {
-                                calcEngine.subtract()
-                                updateDisplay()
-                            }
-                        }
-                        GridRow {
-                            CalculatorButton(title: "0") { appendDigit("0") }
-                            CalculatorButton(title: "") {}
-                            CalculatorButton(title: "") {}
-                            CalculatorButton(title: "+") {
-                                calcEngine.add()
-                                updateDisplay()
-                            }
-                        }
-                        GridRow {
-                            CalculatorButton(title: "CLEAR") {
-                                currentInput = ""
-                                calcEngine.clear()
-                                updateDisplay()
-                            }
-                            .gridCellColumns(2)
-                            CalculatorButton(title: "ENTER") {
-                                pushInput()
-                            }.gridCellColumns(2)
-                        }
+                HStack(spacing: 8) {
+                    CalculatorButton(title: "4") { appendDigit("4") }
+                    CalculatorButton(title: "5") { appendDigit("5") }
+                    CalculatorButton(title: "6") { appendDigit("6") }
+                    CalculatorButton(title: "*") {
+                        calcEngine.multiply()
+                        updateDisplay()
                     }
                 }
-                
+                HStack(spacing: 8) {
+                    CalculatorButton(title: "1") { appendDigit("1") }
+                    CalculatorButton(title: "2") { appendDigit("2") }
+                    CalculatorButton(title: "3") { appendDigit("3") }
+                    CalculatorButton(title: "-") {
+                        calcEngine.subtract()
+                        updateDisplay()
+                    }
+                }
+                HStack(spacing: 8) {
+                    CalculatorButton(title: "0") { appendDigit("0") }
+                    CalculatorButton(title: "CLEAR") {
+                        currentInput = ""
+                        calcEngine.clear()
+                        updateDisplay()
+                    }
+                    CalculatorButton(title: "ENTER") {
+                        pushInput()
+                    }
+                    CalculatorButton(title: "+") {
+                        calcEngine.add()
+                        updateDisplay()
+                    }
+                }
             }
             .padding()
-            
+
             Spacer()
         }
-        
+        .padding()
+        .onAppear(perform: updateDisplay)
     }
-
 
     func appendDigit(_ digit: String) {
         currentInput.append(digit)
@@ -103,16 +85,19 @@ struct RpnCalcView: View {
     }
 
     func updateDisplay() {
-        displayedText = (calcEngine.stack.reversed().map { "\($0)" } + [currentInput]).filter { !$0.isEmpty }.joined(separator: "\n")
+        if !calcEngine.displayMessage.isEmpty {
+            displayedText = calcEngine.displayMessage
+        } else {
+            let stackText = calcEngine.stack.map { "\($0)" }.joined(separator: "\n")
+            displayedText = (stackText.isEmpty ? "" : stackText + "\n") + currentInput
+        }
     }
 
     var printedStack: String {
-        "[" + calcEngine.stack.reversed().map { "\($0)" }.joined(separator: ", ") + "]"
+        "[" + calcEngine.stack.map { "\($0)" }.joined(separator: ", ") + "]"
     }
-
 }
 
 #Preview {
     RpnCalcView()
 }
-

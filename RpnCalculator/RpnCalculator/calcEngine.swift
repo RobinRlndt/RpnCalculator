@@ -1,46 +1,49 @@
-//
-//  File.swift
-//  RpnCalculator
-//
-//  Created by Robin Roelandt on 09/10/2025.
-//
-
 import Foundation
 import Observation
 
 @Observable
 class CalcEngine {
     var stack: [Double] = []
-    
+    var displayMessage: String = ""
+
     func push(_ value: Double) {
         stack.append(value)
+        displayMessage = ""
     }
 
     func clear() {
         stack.removeAll()
+        displayMessage = ""
     }
-    
+
     func add() {
-        bewerking { $0 + $1 }
+        performOperation { $0 + $1 }
     }
 
     func subtract() {
-        bewerking { $0 - $1 }
+        performOperation { $0 - $1 }
     }
 
     func multiply() {
-        bewerking { $0 * $1 }
+        performOperation { $0 * $1 }
     }
 
     func divide() {
-        bewerking { $0 / $1 }
+        performOperation { $0 / $1 }
     }
 
-    private func bewerking(_ operation: (Double, Double) -> Double) {
-        guard stack.count >= 2 else { return }
+    private func performOperation(_ operation: (Double, Double) -> Double) {
+        guard stack.count >= 2 else {
+            displayMessage = "Not enough operands"
+            return
+        }
         let rhs = stack.removeLast()
         let lhs = stack.removeLast()
         let result = operation(lhs, rhs)
         stack.append(result)
+        displayMessage = ""
     }
 }
+
+
+
