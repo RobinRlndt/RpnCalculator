@@ -6,21 +6,24 @@ struct RpnCalcView: View {
     @State private var displayedText: String = ""
 
     var body: some View {
-        VStack {
-            Spacer()
+        HStack(spacing: 20) {
+            
+            VStack {
+                Text(displayedText)
+                    .frame(width: 160, height: 285)
+                    .padding()
+                    .border(Color.black)
 
-            Text(displayedText)
-                .frame(width: 160, height: 285)
-                .padding()
-                .border(Color.black)
-
-            CalculatorButton(title: "Show Stack") {
-                displayedText = printedStack
+                CalculatorButton(title: "Show Stack") {
+                    displayedText = printedStack
+                }
+                .frame(width: 160, height: 50)
+                .padding(.top, 10)
+                
             }
-            .padding(.bottom, 10)
-
-            VStack(spacing: 8) {
-                HStack(spacing: 8) {
+            
+            VStack(spacing: 2) {
+                HStack(spacing: 2) {
                     CalculatorButton(title: "7") { appendDigit("7") }
                     CalculatorButton(title: "8") { appendDigit("8") }
                     CalculatorButton(title: "9") { appendDigit("9") }
@@ -29,7 +32,7 @@ struct RpnCalcView: View {
                         updateDisplay()
                     }
                 }
-                HStack(spacing: 8) {
+                HStack(spacing: 2) {
                     CalculatorButton(title: "4") { appendDigit("4") }
                     CalculatorButton(title: "5") { appendDigit("5") }
                     CalculatorButton(title: "6") { appendDigit("6") }
@@ -38,7 +41,7 @@ struct RpnCalcView: View {
                         updateDisplay()
                     }
                 }
-                HStack(spacing: 8) {
+                HStack(spacing: 2) {
                     CalculatorButton(title: "1") { appendDigit("1") }
                     CalculatorButton(title: "2") { appendDigit("2") }
                     CalculatorButton(title: "3") { appendDigit("3") }
@@ -47,8 +50,16 @@ struct RpnCalcView: View {
                         updateDisplay()
                     }
                 }
-                HStack(spacing: 8) {
+                HStack(spacing: 2) {
                     CalculatorButton(title: "0") { appendDigit("0") }
+                    CalculatorButton(title: "") {}
+                    CalculatorButton(title: "") {}
+                    CalculatorButton(title: "+") {
+                        calcEngine.add()
+                        updateDisplay()
+                    }
+                }
+                HStack(spacing: 2) {
                     CalculatorButton(title: "CLEAR") {
                         currentInput = ""
                         calcEngine.clear()
@@ -57,15 +68,9 @@ struct RpnCalcView: View {
                     CalculatorButton(title: "ENTER") {
                         pushInput()
                     }
-                    CalculatorButton(title: "+") {
-                        calcEngine.add()
-                        updateDisplay()
-                    }
                 }
             }
             .padding()
-
-            Spacer()
         }
         .padding()
         .onAppear(perform: updateDisplay)
@@ -89,7 +94,7 @@ struct RpnCalcView: View {
             displayedText = calcEngine.displayMessage
         } else {
             let stackText = calcEngine.stack.map { "\($0)" }.joined(separator: "\n")
-            displayedText = (stackText.isEmpty ? "" : stackText + "\n") + currentInput
+            displayedText = (currentInput.isEmpty ? "" : currentInput + "\n") + stackText
         }
     }
 
@@ -101,3 +106,4 @@ struct RpnCalcView: View {
 #Preview {
     RpnCalcView()
 }
+

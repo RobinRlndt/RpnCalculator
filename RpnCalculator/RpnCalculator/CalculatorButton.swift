@@ -14,15 +14,18 @@ struct CalculatorButton: View {
     var body: some View {
         Button(action: action) {
             Text(title)
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .font(.title2)
                 .foregroundColor(.white)
-                .font(.title)
+                .padding()
+                .frame(minWidth: 60, minHeight: 60)
                 .background(Color.blue)
                 .cornerRadius(10)
         }
-        .frame(height: 70)
-        .padding(4)
+        .buttonStyle(.plain)
     }
 }
+
+
+
 
 
